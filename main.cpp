@@ -86,7 +86,7 @@ node* build(string s)
         }
         if (i==s.length()-1)
         {
-            node* newnode = new node(s.substr(1,s.length()-2),sign,build(s.substr(1,s.length()-2)),NULL);
+            node* newnode = new node(sign+s.substr(0,s.length()),sign,build(s.substr(1,s.length()-2)),NULL);
             return newnode;
         } else
         {
@@ -101,7 +101,7 @@ node* build(string s)
                 j++;
             }*/
 
-            node* newnode = new node(s,symbol,build(sign + s.substr(1,i-1)),build(s.substr(j,s.length()-j)));
+            node* newnode = new node(sign+s,symbol,build(sign + s.substr(0,i+1)),build(s.substr(j,s.length()-j)));
             return newnode;
         }
     } else
