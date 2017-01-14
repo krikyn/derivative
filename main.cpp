@@ -336,16 +336,41 @@ int main() {
     {
         string ss="";
         for (int i=0;i<s.length();i++)
-            if(s[i]!=' ')
+            if (s[i]!=' ')
+            {
+                if (s[i]!='*')
+                    ss+=s[i];
+                else
+                {
+                    if (s[i+1]=='*')
+                    {
+                        ss+='^';
+                        i++;
+                    }
+                    else
+                        ss+='*';
+                }
+            }
+
+            /*if(s[i]!=' ')
                 if (s[i]!='*')
                     ss+=s[i];
                 else if (s[i+1]=='*')
                     ss+='^';
+                else ss+='*';*/
 
+        //cout<<ss<<"      ";
         //cout<<ss<<endl;
         node* root = build(ss);
 
-        cout<<derivative(root)<<endl;
+        string fetch_string,finish_string;
+        fetch_string = derivative(root);
+        for (int i=0;i<fetch_string.length();i++)
+            if (fetch_string[i]=='^')
+                finish_string+="**";
+            else finish_string+=fetch_string[i];
+
+        cout<<finish_string<<endl;
     }
 
 
