@@ -40,34 +40,32 @@ node* build(string s)
 {
     //cout<<s<<endl;
 
-    if (s[0]=='(')
-    {
-        int i = 1,k=0;
-        while(k>=0)
-        {
+    if (s[0]=='(') {
+        int i = 0, k = 1;
+        while (k > 0) {
             i++;
-            if (s[i]=='(') k++;
-            if (s[i]==')') k--;
+            if (s[i] == '(') k++;
+            if (s[i] == ')') k--;
         }
-
-        if (i==s.length()-1)
-            return build(s.substr(1,s.length()-2));
-        else
-        {
-            int j = i+2;
+        //cout<<i;
+        if (i == s.length() - 1)
+            return build(s.substr(1, s.length() - 2));
+        else {
+            /*int j = i+2;
             string symbol="";
             symbol+=s[i+1];
 
-            /*if (symbol=="*"&&s[i+2]=='*')
+            *//*if (symbol=="*"&&s[i+2]=='*')
             {
                 symbol+='*';
                 j++;
-            }*/
+            }*//*
 
             node* newnode = new node(s,symbol,build(s.substr(1,i-1)),build(s.substr(j,s.length()-j)));
-            return newnode;
+            return newnode;*/
         }
-    } else if (s[0]=='l'||s[0]=='s'||s[0]=='c'||s[0]=='t'||s[0]=='a')
+    }
+    if (s[0]=='l'||s[0]=='s'||s[0]=='c'||s[0]=='t'||s[0]=='a')
     {
         int i=0;
         while(s[i]!='(') i++;
@@ -75,7 +73,7 @@ node* build(string s)
         string sign = s.substr(0,i);
 
         s = s.substr(i,s.length()-i);
-        i=1;
+        i=0;
         int k=0;
 
         while(k>=0)
@@ -211,30 +209,31 @@ string derivative(node* nod)
             return "(" + derivative(nod->left) + "*" + nod->right->s + ")";*/
         string l = derivative(nod->left);
         string r = derivative(nod->right);
-        return "(" + l + "*" + nod->right->s + "+" + nod->left->s + "*" + r + ")";
+        return "(" + l + "*(" + nod->right->s + ")+(" + nod->left->s + ")*" + r + ")";
     }
 
     if (nod->sign=="/")
     {
         if (!ex(nod->right->s)&&!ex(nod->left->s))
-            return 0;
+            return "0";
 
         string l = derivative(nod->left);
         string r = derivative(nod->right);
-        return "((" + l + "*" + nod->right->s + "-" + nod->left->s + "*" + r + ")" + "/" + "(" + nod->right->s + ")^2" + ")";
+        return "((" + l + "*(" + nod->right->s + ")-(" + nod->left->s + ")*" + r + ")" + "/" + "(" + nod->right->s + ")^2" + ")";
     }
 
     if (nod->sign=="^")
     {
         if (!ex(nod->right->s)&&!ex(nod->left->s))
-            return 0;
+            return "0";
 
         string l = derivative(nod->left);
 
         if (!ex(nod->right->s)&&ex(nod->left->s))
         {
             //cout<<"9"<<endl;
-            return "((" + nod->right->s + "*" "(" + nod->left->s + ")^" + "(" + nod->right->s + "-1))*" + l + ")";
+            return "(((" + nod->right->s + ")*" "(" + nod->left->s + ")^" + "(" + nod->right->s + "-1))*" + l + ")";
+            //hazard!
         }
 
 
@@ -243,24 +242,24 @@ string derivative(node* nod)
             return "(((" + nod->left->s + ")^" + "(" + nod->right->s + "))*ln(" + nod->left->s + ")*" + r + ")";
 
         if (ex(nod->right->s)&&ex(nod->left->s))
-            return "(("+nod->left->s+")^(" + nod->right->s+"))*((" + nod->left->s+")/("+nod->right->s+")*" + l + "+ln("+nod->left->s+")*"+ r + ")";
+            return "(("+nod->left->s+")^(" + nod->right->s+"))*((" + nod->right->s+")/("+nod->left->s+")*" + l + "+ln("+nod->left->s+")*"+ r + ")";
     }
 
     if (nod->sign=="ln")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
-            return "((1/(" + nod->left->s + ")*" + l + ")";
+            return "(1/(" + nod->left->s + ")*" + l + ")";
         }
     }
 
     if (nod->sign=="sin")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
@@ -271,7 +270,7 @@ string derivative(node* nod)
     if (nod->sign=="cos")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
@@ -282,7 +281,7 @@ string derivative(node* nod)
     if (nod->sign=="tg")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
@@ -293,7 +292,7 @@ string derivative(node* nod)
     if (nod->sign=="ctg")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
@@ -304,18 +303,19 @@ string derivative(node* nod)
     if (nod->sign=="arcsin")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
-            return "(1/sqrt(1-(" + nod->left->s + ")^2)*" + l + ")";
+            //return "(1/sqrt(1-(" + nod->left->s + ")^2)*" + l + ")";
+            return "(1/(1-(" + nod->left->s + ")^2)^0.5*" + l + ")";
         }
     }
 
     if (nod->sign=="arctg")
     {
         if (!ex(nod->left->s))
-            return 0;
+            return "0";
         else
         {
             string l = derivative(nod->left);
@@ -370,6 +370,7 @@ int main() {
                 finish_string+="**";
             else finish_string+=fetch_string[i];
 
+        //cout<<fetch_string<<"   ";
         cout<<finish_string<<endl;
     }
 
