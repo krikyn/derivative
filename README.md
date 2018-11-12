@@ -1,6 +1,6 @@
 # Derivative v2.0
 
-Ful Clion project. You must compile the file "main.cpp".
+Full Clion project. You must compile the file "main.cpp".
 
 ### An example of the work program:      
 
